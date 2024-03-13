@@ -9,10 +9,10 @@ from .uow import UoW
 
 
 class SQLSessionContext:
-    _session_pool: async_sessionmaker[AsyncSession]
+    _session_pool: async_sessionmaker
     _session: Optional[AsyncSession]
 
-    def __init__(self, session_pool: async_sessionmaker[AsyncSession]) -> None:
+    def __init__(self, session_pool: async_sessionmaker) -> None:
         self._session_pool = session_pool
         self._session = None
 

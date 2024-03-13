@@ -7,7 +7,7 @@ from aiogram.types import ChatMemberUpdated
 
 from src.services.database import DBUser, UoW
 
-router: Final[Router] = Router(name=__name__)
+router = Router(name=__name__)
 router.my_chat_member.filter(F.chat.type == ChatType.PRIVATE)
 
 

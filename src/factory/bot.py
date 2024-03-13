@@ -10,9 +10,13 @@ from src.utils import msgspec_json as mjson
 
 def create_bot(config: AppConfig) -> Bot:
     """
-    :return: Configured ``Bot`` with retry request middleware
+    :return: Configured ``Bot``
     """
-    session: AiohttpSession = AiohttpSession(json_loads=mjson.decode, json_dumps=mjson.encode)
+    session: AiohttpSession = AiohttpSession(
+        json_loads=mjson.decode,
+        json_dumps=mjson.encode
+    )
+
     bot = Bot(
         token=config.common.bot_token.get_secret_value(),
         parse_mode=SULGUK_PARSE_MODE,

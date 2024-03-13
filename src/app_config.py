@@ -9,13 +9,11 @@ from sqlalchemy import URL
 class BaseSettings(_BaseSettings):
     model_config = SettingsConfigDict(extra="ignore", env_file=".env", env_file_encoding="utf-8")
 
-
 class CommonConfig(BaseSettings, env_prefix="COMMON_"):
     bot_token: SecretStr
     drop_pending_updates: bool
     sqlalchemy_logging: bool
-    admin_chat_id: int
-
+    admin_id: int
 
 class PostgresConfig(BaseSettings, env_prefix="POSTGRES_"):
     host: str
@@ -35,13 +33,11 @@ class PostgresConfig(BaseSettings, env_prefix="POSTGRES_"):
             database=self.db,
         )
 
-
 class RedisConfig(BaseSettings, env_prefix="REDIS_"):
     host: str
     port: int
     db: int
     data: str
-
 
 class WebhookConfig(BaseSettings, env_prefix="WEBHOOK_"):
     use: bool
@@ -54,7 +50,6 @@ class WebhookConfig(BaseSettings, env_prefix="WEBHOOK_"):
 
     def build_url(self) -> str:
         return f"{self.base_url}{self.path}"
-
 
 class AppConfig(BaseModel):
     common: CommonConfig

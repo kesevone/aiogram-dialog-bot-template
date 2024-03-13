@@ -1,0 +1,4 @@
+BACK_BUTTON_TEXT = '↩️ Назад'
+NEXT_BUTTON_TEXT = '↪️ Вперёд'
+ARROW_LEFT_BUTTON_TEXT = '⬅️'
+ARROW_RIGHT_BUTTON_TEXT = '➡️'

@@ -1,5 +1,5 @@
 from aiogram.fsm.state import StatesGroup, State
 
 
-class StartDialog(StatesGroup):
-    MAIN = State()
+class MainDialog(StatesGroup):
+    START = State()

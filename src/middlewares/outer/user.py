@@ -20,15 +20,13 @@ class UserMiddleware(BaseMiddleware):
         aiogram_user: Optional[User] = data.get("event_from_user")
         chat: Optional[Chat] = data.get("event_chat")
         if aiogram_user is None or chat is None or aiogram_user.is_bot:
-            # Prevents the bot itself from being added to the database
-            # when accepting chat_join_request and receiving chat_member.
             return await handler(event, data)
 
-        repository: Repository = data["repository"]
-        user: Optional[DBUser] = await repository.users.get(user_id=aiogram_user.id)
+        repository: Repository = data["repo"]
+        user: Optional[DBUser] = await repository.user.get(user_id=aiogram_user.id)
         if user is None:
             uow: UoW = data["uow"]
-            user = DBUser.from_aiogram(
+            user = DBUser.create(
                 user=aiogram_user,
                 chat=chat,
             )

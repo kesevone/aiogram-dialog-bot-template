@@ -1,7 +1,7 @@
 from .context import SQLSessionContext
 from .create_pool import create_pool
 from .models import Base, DBUser
-from .repositories import Repository, UsersRepository
+from .repositories import Repository, UserRepository
 from .uow import UoW
 
 __all__ = [
@@ -10,6 +10,6 @@ __all__ = [
     "Repository",
     "SQLSessionContext",
     "UoW",
-    "UsersRepository",
+    "UserRepository",
     "create_pool",
 ]

@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING
 
 from aiogram import Bot, Dispatcher, loggers
 from aiogram.webhook import aiohttp_server as server
+from aiogram_dialog import setup_dialogs
 from aiohttp import web
 
 from src.utils.loggers import MultilineLogger
@@ -12,10 +13,12 @@ if TYPE_CHECKING:
     from .app_config import AppConfig
 
 
-async def polling_startup(bot: Bot, config: AppConfig) -> None:
+async def polling_startup(dispatcher: Dispatcher, bot: Bot, config: AppConfig) -> None:
     await bot.delete_webhook(drop_pending_updates=config.common.drop_pending_updates)
     if config.common.drop_pending_updates:
         loggers.dispatcher.info("Updates skipped successfully")
+    bg_manager_factory = setup_dialogs(dispatcher)
+    dispatcher['bg_manager_factory'] = bg_manager_factory
 
 
 async def webhook_startup(dispatcher: Dispatcher, bot: Bot, config: AppConfig) -> None:
@@ -40,22 +43,22 @@ async def webhook_shutdown(bot: Bot, config: AppConfig) -> None:
     await bot.session.close()
 
 
-async def run_polling(dispatcher: Dispatcher, bot: Bot) -> None:
-    dispatcher.startup.register(polling_startup)
-    return await dispatcher.start_polling(bot)
+async def run_polling(dp: Dispatcher, bot: Bot) -> None:
+    dp.startup.register(polling_startup)
+    return await dp.start_polling(bot)
 
 
-def run_webhook(dispatcher: Dispatcher, bot: Bot, config: AppConfig) -> None:
+def run_webhook(dp: Dispatcher, bot: Bot, config: AppConfig) -> None:
     app: web.Application = web.Application()
     server.SimpleRequestHandler(
-        dispatcher=dispatcher,
+        dispatcher=dp,
         bot=bot,
         secret_token=config.webhook.secret_token.get_secret_value(),
     ).register(app, path=config.webhook.path)
-    server.setup_application(app, dispatcher, bot=bot)
-    app.update(**dispatcher.workflow_data, bot=bot)
-    dispatcher.startup.register(webhook_startup)
-    dispatcher.shutdown.register(webhook_shutdown)
+    server.setup_application(app, dp, bot=bot)
+    app.update(**dp.workflow_data, bot=bot)
+    dp.startup.register(webhook_startup)
+    dp.shutdown.register(webhook_shutdown)
 
     return web.run_app(
         app=app,
