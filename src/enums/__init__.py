@@ -1,3 +1,3 @@
-from .middleware_event_type import MiddlewareEventType
+from .tag import IDTagEnum
 
-__all__ = ["MiddlewareEventType"]
+__all__ = ['IDTagEnum']

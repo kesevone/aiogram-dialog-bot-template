@@ -1,7 +1,7 @@
 from aiogram_dialog import DialogManager
 
 
-async def get_user_data(dialog_manager: DialogManager, **_kwargs):
+async def get_aiogram_user(dialog_manager: DialogManager, **_kwargs):
     """
     Get user data from an aiogram event.
     """
@@ -9,5 +9,5 @@ async def get_user_data(dialog_manager: DialogManager, **_kwargs):
     return {
         'user_id': user.id,
         'username': user.username,
-        'full_name': user.full_name,
+        'name': user.full_name,
     }

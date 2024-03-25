@@ -2,7 +2,7 @@
 name = "aiogram-bot-template"
 version = "0.1.0"
 description = ""
-authors = ["kesevone <supermomentsofgames@gmail.com>"]
+authors = ["kesevone <kesevone@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]

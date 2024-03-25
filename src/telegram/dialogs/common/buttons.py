@@ -2,17 +2,10 @@ from aiogram_dialog.widgets.kbd import Back, Cancel, Next, Group, PrevPage, Next
 from aiogram_dialog.widgets.text import Const, Format
 from magic_filter import F
 
-from src.telegram.dialogs.common import texts
-from src.telegram.dialogs.common.texts import BACK_BUTTON_TEXT, NEXT_BUTTON_TEXT
+from . import texts
 
 ID_SCROLL_NO_PAGER = 'ID_SCROLL_NO_PAGER'
 
-BACK_DIALOG_BUTTON = Cancel(Const(BACK_BUTTON_TEXT))
-BACK_WINDOW_BUTTON = Back(Const(BACK_BUTTON_TEXT))
-
-NEXT_WINDOW_BUTTON = Next(Const(NEXT_BUTTON_TEXT))
-
-# noinspection PyTypeChecker
 CUSTOM_SCROLL_BTNS = Group(
     PrevPage(
         scroll=ID_SCROLL_NO_PAGER,
@@ -26,3 +19,8 @@ CUSTOM_SCROLL_BTNS = Group(
     ),
     width=2
 )
+
+BACK_DIALOG_BUTTON = Cancel(Const(texts.BACK_BUTTON_TEXT))
+
+BACK_WINDOW_BUTTON = Back(Const(texts.BACK_BUTTON_TEXT))
+NEXT_WINDOW_BUTTON = Next(Const(texts.NEXT_BUTTON_TEXT))
