@@ -3,8 +3,7 @@ from secrets import token_urlsafe
 from typing import Self
 
 from pydantic import BaseModel, Field, SecretStr
-from pydantic_settings import BaseSettings
-from pydantic_settings import SettingsConfigDict
+from pydantic_settings import BaseSettings, SettingsConfigDict
 from redis.asyncio import ConnectionPool, Redis
 from sqlalchemy import URL
 
