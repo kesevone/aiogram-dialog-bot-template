@@ -5,8 +5,7 @@ from typing import Any, Awaitable, Callable, Optional
 from aiogram import BaseMiddleware
 from aiogram.types import Chat, TelegramObject, User
 
-from src.services.database import DBUser
-from src.services.database import Gateway
+from src.services.database import DBUser, Gateway
 from src.utils.logger import database as logger
 
 
