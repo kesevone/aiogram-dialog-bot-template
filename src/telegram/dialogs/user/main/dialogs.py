@@ -1,13 +1,17 @@
 from aiogram_dialog import Dialog, Window
 from aiogram_dialog.widgets.text import Jinja
 
-from . import states, texts
+from . import states
 from ...common import getters as common_getters
 
-main_dialog = Dialog(
+start_dialog = Dialog(
     Window(
-        Jinja(texts.WELCOME_TEXT),
-        getter=common_getters.get_aiogram_user,
-        state=states.MainDialogSG.START
+        Jinja(
+            """
+<b>Добро пожаловать</b>, {{ full_name }}!
+            """
+        ),
+        getter=common_getters.get_db_user,
+        state=states.StartDialogSG.WELCOME,
     )
 )

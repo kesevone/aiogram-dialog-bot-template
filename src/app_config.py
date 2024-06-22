@@ -1,5 +1,6 @@
 from __future__ import annotations
 from secrets import token_urlsafe
+from typing import Self
 
 from pydantic import BaseModel, Field, SecretStr
 from pydantic_settings import BaseSettings
@@ -9,24 +10,28 @@ from sqlalchemy import URL
 
 
 class _BaseSettings(BaseSettings):
-    model_config = SettingsConfigDict(extra='ignore', env_file='.env', env_file_encoding='utf-8')
+    model_config = SettingsConfigDict(
+        extra="ignore", env_file=".env", env_file_encoding="utf-8"
+    )
 
-class CommonConfig(_BaseSettings, env_prefix='COMMON_'):
+
+class CommonConfig(_BaseSettings, env_prefix="COMMON_"):
     bot_token: SecretStr
+    admin_id: int
     drop_pending_updates: bool
     sqlalchemy_logging: bool
-    admin_id: int
 
-class PostgresConfig(_BaseSettings, env_prefix='POSTGRES_'):
-    host: str
+
+class PostgresConfig(_BaseSettings, env_prefix="POSTGRES_"):
     db: str
-    password: SecretStr
+    host: str
     port: int
     user: str
+    password: SecretStr
 
     def build_dsn(self) -> URL:
         return URL.create(
-            drivername='postgresql+asyncpg',
+            drivername="postgresql+asyncpg",
             username=self.user,
             password=self.password.get_secret_value(),
             host=self.host,
@@ -34,7 +39,8 @@ class PostgresConfig(_BaseSettings, env_prefix='POSTGRES_'):
             database=self.db,
         )
 
-class RedisConfig(_BaseSettings, env_prefix='REDIS_'):
+
+class RedisConfig(_BaseSettings, env_prefix="REDIS_"):
     host: str
     port: int
     db: int
@@ -48,7 +54,8 @@ class RedisConfig(_BaseSettings, env_prefix='REDIS_'):
             )
         )
 
-class WebhookConfig(_BaseSettings, env_prefix='WEBHOOK_'):
+
+class WebhookConfig(_BaseSettings, env_prefix="WEBHOOK_"):
     use: bool
     reset: bool
     base_url: str
@@ -58,7 +65,8 @@ class WebhookConfig(_BaseSettings, env_prefix='WEBHOOK_'):
     secret_token: SecretStr = Field(default_factory=token_urlsafe)
 
     def build_url(self) -> str:
-        return f'{self.base_url}{self.path}'
+        return f"{self.base_url}{self.path}"
+
 
 class AppConfig(BaseModel):
     common: CommonConfig
@@ -66,9 +74,9 @@ class AppConfig(BaseModel):
     redis: RedisConfig
     webhook: WebhookConfig
 
-    @staticmethod
-    def create() -> AppConfig:
-        return AppConfig(
+    @classmethod
+    def create(cls) -> Self:
+        return cls(
             common=CommonConfig(),
             postgres=PostgresConfig(),
             redis=RedisConfig(),

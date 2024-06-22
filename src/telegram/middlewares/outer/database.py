@@ -10,7 +10,7 @@ from src.services.database import SQLSessionContext
 class DBSessionMiddleware(BaseMiddleware):
     session_pool: async_sessionmaker[AsyncSession]
 
-    __slots__ = ('session_pool',)
+    __slots__ = ("session_pool",)
 
     def __init__(self, session_pool: async_sessionmaker[AsyncSession]) -> None:
         self.session_pool = session_pool
@@ -21,7 +21,6 @@ class DBSessionMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any],
     ) -> Any:
-        async with SQLSessionContext(session_pool=self.session_pool) as (repository, uow):
-            data['repo'] = repository
-            data['uow'] = uow
+        async with SQLSessionContext(session_pool=self.session_pool) as gateway:
+            data["gateway"] = gateway
             return await handler(event, data)

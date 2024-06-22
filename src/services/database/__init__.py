@@ -1,15 +1,13 @@
 from .context import SQLSessionContext
 from .create_pool import create_pool
 from .models import Base, DBUser
-from .repositories import Repository, UsersRepository
-from .uow import UoW
+from .gateways import Gateway, UsersGateway
 
 __all__ = [
-    'Base',
-    'DBUser',
-    'Repository',
-    'SQLSessionContext',
-    'UoW',
-    'UsersRepository',
-    'create_pool',
+    "Base",
+    "DBUser",
+    "Gateway",
+    "SQLSessionContext",
+    "UsersGateway",
+    "create_pool",
 ]

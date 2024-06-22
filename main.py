@@ -1,23 +1,19 @@
-import asyncio
-
 from aiogram import Bot, Dispatcher
 from aiogram.enums import ParseMode
 
 from src.app_config import AppConfig
 from src.factory import create_bot, create_dispatcher
-from src.runners import run_polling, run_webhook
-from src.utils.logger import setup_logger
+from src.runners import run_bot
+from src.utils.logger.setup import setup_logger
 
 
-async def main() -> None:
+def main() -> None:
     setup_logger()
     config: AppConfig = AppConfig.create()
     dp: Dispatcher = create_dispatcher(config=config)
     bot: Bot = create_bot(config=config, parse_mode=ParseMode.HTML)
-    if config.webhook.use:
-        return run_webhook(dp=dp, bot=bot, config=config)
-    return await run_polling(dp=dp, bot=bot)
+    return run_bot(dp=dp, bot=bot, config=config)
 
 
-if __name__ == '__main__':
-    asyncio.run(main())
+if __name__ == "__main__":
+    main()

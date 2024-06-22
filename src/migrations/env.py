@@ -12,9 +12,11 @@ from src.services.database.models import Base
 config: Config = context.config
 target_metadata: MetaData = Base.metadata
 
+
 def _get_postgres_dsn() -> URL:
     _config: PostgresConfig = PostgresConfig()
     return _config.build_dsn()
+
 
 def run_migrations_offline() -> None:
     context.configure(
@@ -27,11 +29,13 @@ def run_migrations_offline() -> None:
     with context.begin_transaction():
         context.run_migrations()
 
+
 def do_run_migrations(connection: Connection) -> None:
     context.configure(connection=connection, target_metadata=target_metadata)
 
     with context.begin_transaction():
         context.run_migrations()
+
 
 async def run_async_migrations() -> None:
     connectable: AsyncEngine = create_async_engine(url=_get_postgres_dsn())
@@ -41,8 +45,10 @@ async def run_async_migrations() -> None:
 
     await connectable.dispose()
 
+
 def run_migrations_online() -> None:
     asyncio.run(run_async_migrations())
+
 
 if context.is_offline_mode():
     run_migrations_offline()

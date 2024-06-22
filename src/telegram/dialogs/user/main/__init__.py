@@ -1,7 +1,7 @@
 from aiogram import Router
 
 from . import handlers
-from .dialogs import main_dialog
+from .dialogs import start_dialog
 
 router = Router(name=__name__)
-router.include_routers(main_dialog, handlers.router)
+router.include_routers(handlers.router, start_dialog)

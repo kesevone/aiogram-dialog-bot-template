@@ -1,11 +1,9 @@
-import asyncio
 from types import TracebackType
-from typing import Optional, Tuple, Type
+from typing import Optional, Type
 
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from .repositories import Repository
-from .uow import UoW
+from .gateways import Gateway
 
 
 class SQLSessionContext:
@@ -16,9 +14,9 @@ class SQLSessionContext:
         self._session_pool = session_pool
         self._session = None
 
-    async def __aenter__(self) -> Tuple[Repository, UoW]:
+    async def __aenter__(self) -> Gateway:
         self._session: AsyncSession = await self._session_pool().__aenter__()
-        return Repository(session=self._session), UoW(session=self._session)
+        return Gateway(session=self._session)
 
     async def __aexit__(
         self,
@@ -28,6 +26,6 @@ class SQLSessionContext:
     ) -> None:
         if self._session is None:
             return
-        task: asyncio.Task[None] = asyncio.create_task(self._session.close())
-        await asyncio.shield(task)
+
+        await self._session.close()
         self._session = None

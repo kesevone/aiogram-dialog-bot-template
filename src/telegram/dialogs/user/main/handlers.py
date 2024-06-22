@@ -8,9 +8,6 @@ from . import states
 router = Router(name=__name__)
 
 
-class MainHandlers:
-
-    @staticmethod
-    @router.message(CommandStart())
-    async def start_main_dialog(_: Message, dialog_manager: DialogManager):
-        return await dialog_manager.start(states.MainDialogSG.START)
+@router.message(CommandStart())
+async def start_main_dialog(_: Message, dialog_manager: DialogManager):
+    return await dialog_manager.start(states.StartDialogSG.WELCOME)

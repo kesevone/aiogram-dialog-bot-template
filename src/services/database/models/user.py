@@ -1,28 +1,52 @@
 from __future__ import annotations
 
-from typing import Optional
+from typing import Optional, Self
 
+from aiogram import html
 from aiogram.types import User
 from aiogram.utils.link import create_tg_link
-from sqlalchemy.orm import Mapped
+from sqlalchemy import true
+from sqlalchemy.orm import Mapped, mapped_column
 
-from .base import Base, Int64, TimeStampMixin, UserIDStrKP
+from .base import Base, TimeStampMixin, IntPK
 
 
 class DBUser(Base, TimeStampMixin):
-    __tablename__ = 'users'
+    __tablename__ = "users"
 
-    id: Mapped[UserIDStrKP]
-    telegram_id: Mapped[Int64]
-    name: Mapped[Optional[str]]
+    id: Mapped[IntPK]
+    full_name: Mapped[str]
+    username: Mapped[Optional[str]]
+    is_active: Mapped[Optional[bool]] = mapped_column(server_default=true())
+
+    def __str__(self):
+        return self.full_name
 
     @property
     def url(self) -> str:
-        return create_tg_link('user', id=self.id)
+        return create_tg_link("user", id=self.id)
+
+    @property
+    def mention(self) -> str:
+        return html.link(value=self.full_name, link=self.url)
 
     @classmethod
-    def create(cls, user: User) -> DBUser:
-        return DBUser(
-            telegram_id=user.id,
-            name=user.full_name
+    def from_any(
+        cls,
+        user_id: int,
+        full_name: Optional[str] = None,
+        username: Optional[str] = None,
+        is_active: Optional[bool] = True,
+    ) -> Self:
+        return cls(
+            id=user_id, full_name=full_name, username=username, is_active=is_active
+        )
+
+    @classmethod
+    def from_aiogram(cls, user: User, is_active: Optional[bool] = True) -> Self:
+        return cls(
+            id=user.id,
+            full_name=user.full_name,
+            username=user.username,
+            is_active=is_active,
         )
