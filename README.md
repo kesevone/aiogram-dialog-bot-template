@@ -1,6 +1,6 @@
 — My bot template, uses **Aiogram** + **PostgreSQL** + **Aiogram-Dialog** for **simplified** and **convenient** work with widgets.
 **FastApi + Uvicorn** (Webhooks for the bot, instead of aiohttp).
-Several implementations that I liked I took from the template **wakaree**.
+Several implementations that I liked I took from the template [wakaree](https://github.com/wakaree/aiogram_bot_template).
 
 ### ⬇️ Installation (Ubuntu/Linux/Windows)
 **Before setting up the bot**, you need to prepare **PostgreSQL** (user and database itself) and **Redis**.
