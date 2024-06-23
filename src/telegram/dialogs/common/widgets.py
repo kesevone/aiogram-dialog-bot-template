@@ -38,7 +38,7 @@ CUSTOM_SCROLL_BTNS = Group(
 CANCEL_DIALOG_BUTTON = Button(
     Const(texts.CANCEL_BUTTON_TEXT),
     id="CLOSE_DIALOG",
-    on_click=lambda e, w, m: w.done(show_mode=ShowMode.DELETE_AND_SEND),
+    on_click=lambda e, w, m: m.done(show_mode=ShowMode.DELETE_AND_SEND),
 )
 BACK_DIALOG_BUTTON = Cancel(Const(texts.BACK_BUTTON_TEXT))
 BACK_WINDOW_BUTTON = Back(Const(texts.BACK_BUTTON_TEXT))
