@@ -1,11 +1,18 @@
 from __future__ import annotations
+
 from secrets import token_urlsafe
-from typing import Self
+from typing import Optional, Self
 
 from pydantic import BaseModel, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from redis.asyncio import ConnectionPool, Redis
 from sqlalchemy import URL
+from sqlalchemy.ext.asyncio import (
+    async_sessionmaker,
+    AsyncEngine,
+    AsyncSession,
+    create_async_engine,
+)
 
 
 class _BaseSettings(BaseSettings):
@@ -37,6 +44,14 @@ class PostgresConfig(_BaseSettings, env_prefix="POSTGRES_"):
             port=self.port,
             database=self.db,
         )
+
+    def build_pool(
+        self, dsn: Optional[str | URL] = None, enable_logging: Optional[bool] = False
+    ) -> async_sessionmaker[AsyncSession]:
+        if dsn is None:
+            dsn = self.build_dsn()
+        engine: AsyncEngine = create_async_engine(url=dsn, echo=enable_logging)
+        return async_sessionmaker(engine, expire_on_commit=False)
 
 
 class RedisConfig(_BaseSettings, env_prefix="REDIS_"):

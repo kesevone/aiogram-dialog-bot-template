@@ -1,7 +1,7 @@
 from aiogram.types import User
 from aiogram_dialog import DialogManager
 
-from src.services.database import DBUser
+from src.database import DBUser
 
 
 async def get_aiogram_user(dialog_manager: DialogManager, **_kwargs):
@@ -26,4 +26,5 @@ async def get_db_user(dialog_manager: DialogManager, **_kwargs):
         "user_id": db_user.id,
         "username": db_user.username,
         "full_name": db_user.full_name,
+        "user_is_active": db_user.is_active,
     }

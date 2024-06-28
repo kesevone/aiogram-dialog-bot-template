@@ -2,12 +2,12 @@ import asyncio
 
 from alembic import context
 from alembic.config import Config
-from sqlalchemy import URL, MetaData
+from sqlalchemy import MetaData, URL
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import AsyncEngine, create_async_engine
 
 from src.app_config import PostgresConfig
-from src.services.database.models import Base
+from src.database.models import Base
 
 config: Config = context.config
 target_metadata: MetaData = Base.metadata

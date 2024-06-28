@@ -5,7 +5,6 @@ from typing import TYPE_CHECKING
 import aiogram_fastapi_server as server
 import uvicorn
 from aiogram import Bot, Dispatcher, loggers
-from aiogram_dialog import setup_dialogs
 from fastapi import FastAPI
 
 from .data import LOGGING_CONFIG
@@ -14,10 +13,11 @@ if TYPE_CHECKING:
     from .app_config import AppConfig
 
 
-async def polling_startup(dispatcher: Dispatcher, bot: Bot, config: AppConfig) -> None:
+async def polling_startup(bot: Bot, config: AppConfig) -> None:
     await bot.delete_webhook(drop_pending_updates=config.common.drop_pending_updates)
-    bg_manager_factory = setup_dialogs(router=dispatcher)
-    dispatcher["bg_manager_factory"] = bg_manager_factory
+
+    if config.common.drop_pending_updates:
+        return loggers.dispatcher.info("Pending updates successfully dropped.")
 
 
 async def webhook_startup(dispatcher: Dispatcher, bot: Bot, config: AppConfig) -> None:
@@ -28,20 +28,19 @@ async def webhook_startup(dispatcher: Dispatcher, bot: Bot, config: AppConfig) -
         secret_token=config.webhook.secret_token.get_secret_value(),
         drop_pending_updates=config.common.drop_pending_updates,
     ):
-        return loggers.webhook.info(
-            'Main bot webhook successfully set on url "%s"', url
-        )
-    return loggers.webhook.error('Failed to set main bot webhook on url "%s"', url)
+        return loggers.webhook.info("Bot webhook successfully set on %s", url)
+    return loggers.webhook.error("Failed to set bot webhook on %s", url)
 
 
 async def webhook_shutdown(bot: Bot, config: AppConfig) -> None:
     if not config.webhook.reset:
         return
+
     if await bot.delete_webhook():
-        loggers.webhook.info("Dropped main bot webhook.")
+        loggers.webhook.info("Dropped bot webhook.")
     else:
-        loggers.webhook.error("Failed to drop main bot webhook.")
-    await bot.session.close()
+        loggers.webhook.error("Failed to drop bot webhook.")
+    return await bot.session.close()
 
 
 def run_bot(dp: Dispatcher, bot: Bot, config: AppConfig) -> None:

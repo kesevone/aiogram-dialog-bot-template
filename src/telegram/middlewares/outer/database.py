@@ -4,7 +4,7 @@ from aiogram import BaseMiddleware
 from aiogram.types import TelegramObject
 from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncSession
 
-from src.services.database import SQLSessionContext
+from src.database import Gateway
 
 
 class DBSessionMiddleware(BaseMiddleware):
@@ -21,6 +21,6 @@ class DBSessionMiddleware(BaseMiddleware):
         event: TelegramObject,
         data: Dict[str, Any],
     ) -> Any:
-        async with SQLSessionContext(session_pool=self.session_pool) as gateway:
-            data["gateway"] = gateway
+        async with self.session_pool() as session:
+            data["gateway"] = Gateway(session=session)
             return await handler(event, data)

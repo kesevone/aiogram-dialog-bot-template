@@ -1,4 +1,5 @@
 from aiogram import Bot, Dispatcher
+from sqlalchemy.orm import close_all_sessions
 
 from src.app_config import AppConfig
 from src.factory import create_bot, create_dispatcher
@@ -15,4 +16,7 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:
+        close_all_sessions()
