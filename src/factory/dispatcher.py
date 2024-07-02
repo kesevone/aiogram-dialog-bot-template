@@ -9,7 +9,7 @@ from redis.asyncio import Redis
 
 from src.app_config import AppConfig
 from src.telegram import extra
-from src.telegram.dialogs import user
+from src.telegram.dialogs import common, user
 from src.telegram.middlewares import DBSessionMiddleware, UserMiddleware
 from src.utils import msgspec_json as mjson
 
@@ -46,7 +46,7 @@ def create_dispatcher(config: AppConfig) -> Dispatcher:
     bg_manager_factory = setup_dialogs(router=dp)
     dp["bg_manager_factory"] = bg_manager_factory
 
-    dp.include_routers(extra.router, user.router)
+    dp.include_routers(extra.router, common.router, user.router)
     _setup_outer_middlewares(dp=dp, config=config)
     _setup_inner_middlewares(dp=dp)
     return dp
