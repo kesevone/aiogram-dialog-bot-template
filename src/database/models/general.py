@@ -8,7 +8,7 @@ from aiogram.utils.link import create_tg_link
 from sqlalchemy import true
 from sqlalchemy.orm import Mapped, mapped_column
 
-from .base import Base, TimeStampMixin, IntPK
+from .base import Base, IntPK, TimeStampMixin
 
 
 class DBUser(Base, TimeStampMixin):
@@ -18,9 +18,6 @@ class DBUser(Base, TimeStampMixin):
     full_name: Mapped[str]
     username: Mapped[Optional[str]]
     is_active: Mapped[Optional[bool]] = mapped_column(server_default=true())
-
-    def __str__(self):
-        return self.full_name
 
     @property
     def url(self) -> str:

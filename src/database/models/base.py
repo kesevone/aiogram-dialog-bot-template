@@ -1,9 +1,15 @@
 from datetime import datetime, timezone
 from typing import Annotated, TypeAlias
 
-from sqlalchemy import BigInteger, DateTime, ForeignKey, Integer, func, String
-from sqlalchemy.dialects.postgresql import JSON, ARRAY
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, registry
+from sqlalchemy import BigInteger, DateTime, ForeignKey, func, Integer, String
+from sqlalchemy.dialects.postgresql import ARRAY, JSON
+from sqlalchemy.orm import (
+    DeclarativeBase,
+    Mapped,
+    mapped_column,
+    MappedAsDataclass,
+    registry,
+)
 
 Int16: TypeAlias = Annotated[int, 16]
 Int64: TypeAlias = Annotated[int, 64]
@@ -15,7 +21,7 @@ UserFK = Annotated[
 ]
 
 
-class Base(DeclarativeBase):
+class Base(MappedAsDataclass, DeclarativeBase):
     registry = registry(
         type_annotation_map={
             Int16: Integer,

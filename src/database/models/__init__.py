@@ -1,4 +1,4 @@
 from .base import Base
-from .user import DBUser
+from .general import DBUser
 
 __all__ = ["Base", "DBUser"]

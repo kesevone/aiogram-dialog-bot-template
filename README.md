@@ -17,6 +17,7 @@ You can find links to the technologies used below.
 ### 📂 Used technologies:
 + [Aiogram 3.7.0](https://github.com/aiogram/aiogram) (Telegram Bot Framework)
 + [Aiogram Dialog 2.1.0](https://github.com/Tishka17/aiogram_dialog) (convenient and simple development of menus and messages in the bot, as if it were a GUI application)
++ [Sulguk 0.8.0](https://github.com/Tishka17/sulguk) (HTML converter to Telegram entities)
 + [FastAPI Server](https://github.com/4u-org/aiogram_fastapi_server) (replacement of aiohttp for bot webhooks, since aiohttp is not intended for High-Level development of server options)
 + [PostgreSQL](https://www.postgresql.org/) (Database, best choice)
 + [SQLAlchemy 2.0.30](https://github.com/sqlalchemy/sqlalchemy) (Toolkit and ORM for working with a database)
