@@ -22,15 +22,18 @@ CUSTOM_SCROLL_BTNS = Group(
     PrevPage(
         scroll=ID_SCROLL_NO_PAGER,
         text=Const(texts.ARROW_LEFT_BUTTON_TEXT),
-        when=F["current_page1"] > 1,
+        when=(F["current_page1"] > 1) & (F["pages"] > 1),
     ),
-    FirstPage(ID_SCROLL_NO_PAGER, text=Format("{current_page1}/{pages} стр.")),
+    FirstPage(
+        ID_SCROLL_NO_PAGER,
+        text=Format("{current_page1}/{pages} стр."),
+        when=F["pages"] > 1,
+    ),
     NextPage(
         scroll=ID_SCROLL_NO_PAGER,
         text=Const(texts.ARROW_RIGHT_BUTTON_TEXT),
-        when=F["current_page1"] != F["pages"],
+        when=(F["current_page1"] != F["pages"]) & (F["pages"] > 1),
     ),
-    when=F["pages"] > 1,
     width=3,
 )
 
