@@ -3,17 +3,16 @@ from aiogram.exceptions import TelegramBadRequest
 from aiogram.filters import ExceptionTypeFilter
 from aiogram.types import ErrorEvent
 from aiogram_dialog import DialogManager, ShowMode, StartMode
-from aiogram_dialog.api.exceptions import OutdatedIntent, UnknownIntent
+from aiogram_dialog.api.exceptions import OutdatedIntent, UnknownIntent, UnknownState
 
 from src.telegram.dialogs.user.main import states
-
 from src.utils.logger import service
 
 router = Router()
 
 
-@router.errors(ExceptionTypeFilter(UnknownIntent, OutdatedIntent))
-async def on_intent_error(event: ErrorEvent, dialog_manager: DialogManager):
+@router.errors(ExceptionTypeFilter(UnknownIntent, OutdatedIntent, UnknownState))
+async def on_dialog_errors(event: ErrorEvent, dialog_manager: DialogManager):
     # Handling UnknownIntent and OutdatedIntent Error, starting new dialog.
     service.error("Restarting dialog: %s", event.exception)
     if event.update.callback_query:
