@@ -3,7 +3,7 @@ from aiogram.filters import CommandStart
 from aiogram.types import Message
 from aiogram_dialog import DialogManager
 
-from . import states
+from .. import states
 
 router = Router(name=__name__)
 

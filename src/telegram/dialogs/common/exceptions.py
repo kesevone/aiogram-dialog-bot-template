@@ -5,7 +5,7 @@ from aiogram.types import ErrorEvent
 from aiogram_dialog import DialogManager, ShowMode, StartMode
 from aiogram_dialog.api.exceptions import OutdatedIntent, UnknownIntent, UnknownState
 
-from src.telegram.dialogs.user.main import states
+from src.telegram.dialogs.user import states
 from src.utils.logger import service
 
 router = Router()
