@@ -3,7 +3,6 @@ from __future__ import annotations
 from aiogram import Dispatcher
 from aiogram.fsm.storage.memory import SimpleEventIsolation
 from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
-from aiogram.utils.callback_answer import CallbackAnswerMiddleware
 from aiogram_dialog import setup_dialogs
 from redis.asyncio import Redis
 
@@ -21,10 +20,6 @@ def _setup_outer_middlewares(dp: Dispatcher, config: AppConfig) -> None:
 
     dp.update.outer_middleware(DBSessionMiddleware(session_pool=pool))
     dp.update.outer_middleware(UserMiddleware())
-
-
-def _setup_inner_middlewares(dp: Dispatcher) -> None:
-    dp.callback_query.middleware(CallbackAnswerMiddleware())
 
 
 def create_dispatcher(config: AppConfig) -> Dispatcher:
@@ -48,5 +43,4 @@ def create_dispatcher(config: AppConfig) -> Dispatcher:
 
     dp.include_routers(extra.router, common.router, user.router)
     _setup_outer_middlewares(dp=dp, config=config)
-    _setup_inner_middlewares(dp=dp)
     return dp
