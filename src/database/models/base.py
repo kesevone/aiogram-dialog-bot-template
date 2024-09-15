@@ -7,7 +7,6 @@ from sqlalchemy.orm import (
     DeclarativeBase,
     Mapped,
     mapped_column,
-    MappedAsDataclass,
     registry,
 )
 
@@ -21,7 +20,7 @@ UserFK = Annotated[
 ]
 
 
-class Base(MappedAsDataclass, DeclarativeBase):
+class Base(DeclarativeBase):
     registry = registry(
         type_annotation_map={
             Int16: Integer,
