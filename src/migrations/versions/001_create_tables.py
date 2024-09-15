@@ -27,7 +27,7 @@ def upgrade() -> None:
         sa.Column("full_name", sa.String(), nullable=True),
         sa.Column("username", sa.String(), nullable=True),
         sa.Column(
-            "is_active", sa.Boolean(), server_default=sa.text("true"), nullable=True
+            "is_active", sa.Boolean(), server_default=sa.text("true"), nullable=False
         ),
         sa.Column(
             "created_at",

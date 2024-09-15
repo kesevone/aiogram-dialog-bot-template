@@ -17,7 +17,7 @@ class DBUser(Base, TimeStampMixin):
     id: Mapped[IntPK]
     full_name: Mapped[str]
     username: Mapped[Optional[str]]
-    is_active: Mapped[Optional[bool]] = mapped_column(server_default=true())
+    is_active: Mapped[bool] = mapped_column(server_default=true())
 
     @property
     def url(self) -> str:
@@ -33,14 +33,14 @@ class DBUser(Base, TimeStampMixin):
         user_id: int,
         full_name: Optional[str] = None,
         username: Optional[str] = None,
-        is_active: Optional[bool] = True,
+        is_active: Optional[bool] = None,
     ) -> Self:
         return cls(
             id=user_id, full_name=full_name, username=username, is_active=is_active
         )
 
     @classmethod
-    def from_aiogram(cls, user: User, is_active: Optional[bool] = True) -> Self:
+    def from_aiogram(cls, user: User, is_active: Optional[bool] = None) -> Self:
         return cls(
             id=user.id,
             full_name=user.full_name,
