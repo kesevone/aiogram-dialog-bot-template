@@ -2,7 +2,7 @@ import logging
 
 
 def setup_logger(level: int = logging.INFO) -> None:
-    for name in ["aiogram.middlewares", "aiogram.event", "aiohttp.access"]:
+    for name in ["aiogram.middlewares", "aiogram.event", "aiohttp.access", "apscheduler._schedulers.async_"]:
         logging.getLogger(name).setLevel(logging.WARNING)
 
     logging.basicConfig(

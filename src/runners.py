@@ -6,6 +6,7 @@ import aiogram_fastapi_server as server
 import uvicorn
 from aiogram import Bot, Dispatcher, loggers
 from fastapi import FastAPI
+from sqlalchemy.ext.asyncio import AsyncEngine
 
 if TYPE_CHECKING:
     from .app_config import AppConfig
@@ -41,15 +42,20 @@ async def webhook_shutdown(bot: Bot, config: AppConfig) -> None:
     return await bot.session.close()
 
 
-def run_bot(dp: Dispatcher, bot: Bot, config: AppConfig) -> None:
-    if config.webhook.use:
-        return run_webhook(dp=dp, bot=bot, config=config)
-    return run_polling(dp=dp, bot=bot)
+async def run_bot(dp: Dispatcher, bot: Bot, config: AppConfig) -> None:
+    sqlite_engine: AsyncEngine = config.scheduler.build_engine()
+    async with config.scheduler.build_scheduler(engine=sqlite_engine) as sched:
+        await sched.start_in_background()
+
+        dp["scheduler"] = sched
+        if config.webhook.enabled:
+            return run_webhook(dp=dp, bot=bot, config=config)
+        return await run_polling(dp=dp, bot=bot)
 
 
-def run_polling(dp: Dispatcher, bot: Bot) -> None:
+async def run_polling(dp: Dispatcher, bot: Bot) -> None:
     dp.startup.register(polling_startup)
-    return dp.run_polling(bot)
+    return await dp.start_polling(bot)
 
 
 def run_webhook(dp: Dispatcher, bot: Bot, config: AppConfig) -> None:
