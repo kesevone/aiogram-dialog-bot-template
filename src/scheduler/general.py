@@ -28,9 +28,9 @@ class CustomScheduler(AsyncScheduler):
     """
 
     def __init__(self, data_store: DataStore, enable_logging: bool = False) -> None:
-        self.data_store = data_store
-        self.enable_logging = enable_logging
         super().__init__()
+        self.enable_logging = enable_logging
+        self.data_store = data_store
 
     def log(self, msg: object, *args: object) -> None:
         if self.enable_logging:
