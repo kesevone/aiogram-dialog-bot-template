@@ -25,5 +25,5 @@ You can find links to the technologies used below.
 + [Redis 5.0.6](https://github.com/redis/redis) (In-memory data storage for FSM and caching)
 
 ## 📌 TODO
-+ [✅] Integration APScheduler, a full-fledged task scheduler (.. broker).
++ [+] Integration APScheduler, a full-fledged task scheduler (.. broker).
 + [ ] Dishka DI framework from Tishka17.
