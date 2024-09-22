@@ -23,6 +23,7 @@ You can find links to the technologies used below.
 + [SQLAlchemy 2.0.30](https://github.com/sqlalchemy/sqlalchemy) (Toolkit and ORM for working with a database)
 + [Alembic](https://github.com/alembic/alembic) (Lightweight database migration tool)
 + [Redis 5.0.6](https://github.com/redis/redis) (In-memory data storage for FSM and caching)
++ [APScheduler 4.0.0a5](https://github.com/agronholm/apscheduler) (Advanced Python Scheduler (APScheduler) is a task scheduler and task queue system)
 
 ## 📌 TODO
 + [x] Integration APScheduler, a full-fledged task scheduler (.. broker).
