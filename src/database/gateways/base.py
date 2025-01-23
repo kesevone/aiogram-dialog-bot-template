@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, Iterable, Optional, TYPE_CHECKING
 
 from sqlalchemy import ColumnElement, Select
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -39,11 +39,13 @@ class BaseGateway:
             | QueryableAttribute[Any]
         ] = None,
     ) -> None:
-        if not relations:
-            return
-
-        if not isinstance(relations, (list, tuple)):
+        if not isinstance(relations, Iterable):
+            if relations is None:
+                return
             relations = [relations]
+        else:
+            if not relations:
+                return
 
         self._stmt = self._stmt.options(
             *[joinedload(relation) for relation in relations]
@@ -55,11 +57,13 @@ class BaseGateway:
             tuple[str | ColumnElement] | list[str | ColumnElement] | str | ColumnElement
         ] = None,
     ) -> None:
-        if not columns:
-            return
-
-        if not isinstance(columns, (list, tuple)):
+        if not isinstance(columns, Iterable):
+            if columns is None:
+                return
             columns = [columns]
+        else:
+            if not columns:
+                return
 
         self._stmt = self._stmt.order_by(*columns)
 

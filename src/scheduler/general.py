@@ -99,6 +99,7 @@ class CustomScheduler(AsyncScheduler):
     ) -> Schedule:
         schedule_id: str = await self.add_schedule(
             func_or_task_id=task_id,
+            id=task_id,
             trigger=trigger,
             conflict_policy=ConflictPolicy.replace,
             max_running_jobs=max_running_jobs,
