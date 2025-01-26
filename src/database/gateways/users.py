@@ -1,6 +1,6 @@
 from typing import Any, Optional, Sequence
 
-from sqlalchemy import ColumnElement, func, ScalarResult, select
+from sqlalchemy import ColumnElement, func, or_, ScalarResult, select
 from sqlalchemy.orm import QueryableAttribute
 
 from src.database.models import DBUser
@@ -11,17 +11,13 @@ class UsersGateway(BaseGateway):
     async def get_by_id(
         self,
         user_id: int,
-        is_active: Optional[bool] = None,
         load: Optional[
             tuple[QueryableAttribute[Any]]
             | list[QueryableAttribute[Any]]
             | QueryableAttribute[Any]
         ] = None,
     ) -> Optional[DBUser]:
-        self._stmt = select(DBUser).where(
-            DBUser.id == user_id,
-            (DBUser.is_active == is_active) | (is_active is None),
-        )
+        self._stmt = select(DBUser).where(DBUser.id == user_id)
 
         self.load(load)
 
@@ -30,7 +26,6 @@ class UsersGateway(BaseGateway):
     async def get_by_username(
         self,
         username: str,
-        is_active: Optional[bool] = None,
         load: Optional[
             tuple[QueryableAttribute[Any]]
             | list[QueryableAttribute[Any]]
@@ -42,8 +37,7 @@ class UsersGateway(BaseGateway):
         limit: Optional[int] = None,
     ) -> Optional[DBUser]:
         self._stmt = select(DBUser).where(
-            func.lower(DBUser.username) == username.lower(),
-            (DBUser.is_active == is_active) | (is_active is None),
+            func.lower(DBUser.username) == username.lower()
         )
 
         self.load(load)
@@ -65,7 +59,9 @@ class UsersGateway(BaseGateway):
         ] = None,
         limit: Optional[int] = None,
     ) -> Sequence[Optional[DBUser]]:
-        self._stmt = select(DBUser).where(DBUser.is_active == is_active)
+        self._stmt = select(DBUser).where(
+            or_(DBUser.is_active == is_active, is_active is None)
+        )
 
         self.load(load)
         self.order_by(order_by)
