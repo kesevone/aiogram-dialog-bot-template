@@ -4,7 +4,7 @@ from typing import Any, Callable, Optional
 from apscheduler import AsyncScheduler, ConflictPolicy, RunState, Schedule, Task
 from apscheduler.abc import DataStore, Trigger
 
-from src.utils.logger import scheduler_logger
+from bot.utils.logger import scheduler_logger
 
 
 class CustomScheduler(AsyncScheduler):

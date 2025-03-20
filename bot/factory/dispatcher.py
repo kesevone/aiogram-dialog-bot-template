@@ -6,11 +6,11 @@ from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
 from aiogram_dialog import setup_dialogs
 from redis.asyncio import Redis
 
-from src.app_config import AppConfig
-from src.telegram import extra
-from src.telegram.dialogs import common, user
-from src.telegram.middlewares import DBSessionMiddleware, UserMiddleware
-from src.utils import msgspec_json as mjson
+from bot.configs.app import AppConfig
+from bot.telegram import extra
+from bot.telegram.dialogs import common, user
+from bot.telegram.middlewares import DBSessionMiddleware, UserMiddleware
+from bot.utils import msgspec_json as mjson
 
 
 def _setup_outer_middlewares(dp: Dispatcher, config: AppConfig) -> None:

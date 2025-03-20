@@ -3,10 +3,10 @@ import asyncio
 from aiogram import Bot, Dispatcher
 from sqlalchemy.orm import close_all_sessions
 
-from src.app_config import AppConfig
-from src.factory import create_bot, create_dispatcher
-from src.runners import run_bot
-from src.utils.logger.setup import setup_logger
+from bot.configs.app import AppConfig
+from bot.factory import create_bot, create_dispatcher
+from bot.runners import run_bot
+from bot.utils.logger.setup import setup_logger
 
 
 async def main() -> None:

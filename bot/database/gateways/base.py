@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload, QueryableAttribute
 
 if TYPE_CHECKING:
-    from src.database import Base
+    from bot.database import Base
 
 
 class BaseGateway:

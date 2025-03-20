@@ -8,8 +8,8 @@ from aiogram.client.session.aiohttp import AiohttpSession
 from aiogram.enums import ParseMode
 from sulguk import AiogramSulgukMiddleware
 
-from src.app_config import AppConfig
-from src.utils import msgspec_json as mjson
+from bot.configs.app import AppConfig
+from bot.utils import msgspec_json as mjson
 
 
 def create_bot(
@@ -18,6 +18,8 @@ def create_bot(
     session: AiohttpSession = AiohttpSession(
         json_loads=mjson.decode, json_dumps=mjson.encode
     )
+    if config.localbotapi.enabled:
+        session.api = config.localbotapi.build_server()
 
     bot = Bot(
         token=config.common.bot_token.get_secret_value(),

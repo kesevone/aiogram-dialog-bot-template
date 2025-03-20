@@ -1,7 +1,7 @@
 from aiogram.types import User
 from aiogram_dialog import DialogManager
 
-from src.database import DBUser
+from bot.database import DBUser
 
 
 async def get_aiogram_user(dialog_manager: DialogManager, **_kwargs):

@@ -5,8 +5,8 @@ from typing import Any, Awaitable, Callable, Optional
 from aiogram import BaseMiddleware
 from aiogram.types import Chat, TelegramObject, User
 
-from src.database import DBUser, Gateway
-from src.utils.logger import database as logger
+from bot.database import DBUser, Gateway
+from bot.utils.logger import database as logger
 
 
 class UserMiddleware(BaseMiddleware):
@@ -30,13 +30,13 @@ class UserMiddleware(BaseMiddleware):
                 "New user in database: %s (%d)", aiogram_user.full_name, aiogram_user.id
             )
 
-        if aiogram_user.username and user.username != aiogram_user.username:
+        if user.username != aiogram_user.username:
             user.username = aiogram_user.username
-            await gw.commit(user)
+            await gw.commit()
 
-        if aiogram_user.full_name and user.full_name != aiogram_user.full_name:
+        if user.full_name != aiogram_user.full_name:
             user.full_name = aiogram_user.full_name
-            await gw.commit(user)
+            await gw.commit()
 
         data["user"] = user
         return await handler(event, data)

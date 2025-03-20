@@ -3,7 +3,7 @@ from typing import Any, Optional, Sequence
 from sqlalchemy import ColumnElement, func, or_, ScalarResult, select
 from sqlalchemy.orm import QueryableAttribute
 
-from src.database.models import DBUser
+from bot.database.models import DBUser
 from .base import BaseGateway
 
 

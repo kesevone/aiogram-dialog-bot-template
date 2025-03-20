@@ -9,7 +9,7 @@ from fastapi import FastAPI
 from sqlalchemy.ext.asyncio import AsyncEngine
 
 if TYPE_CHECKING:
-    from .app_config import AppConfig
+    from .configs.app import AppConfig
 
 
 async def polling_startup(bot: Bot, config: AppConfig) -> None:

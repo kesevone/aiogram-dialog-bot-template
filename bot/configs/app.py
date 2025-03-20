@@ -3,19 +3,15 @@ from __future__ import annotations
 from secrets import token_urlsafe
 from typing import Optional, Self
 
+from aiogram.client.telegram import TelegramAPIServer
 from apscheduler.datastores.sqlalchemy import SQLAlchemyDataStore
 from pydantic import BaseModel, Field, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
 from redis.asyncio import ConnectionPool, Redis
 from sqlalchemy import URL
-from sqlalchemy.ext.asyncio import (
-    async_sessionmaker,
-    AsyncEngine,
-    AsyncSession,
-    create_async_engine,
-)
+from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncEngine, AsyncSession, create_async_engine
 
-from src.scheduler import CustomScheduler
+from bot.scheduler import CustomScheduler
 
 
 class _BaseSettings(BaseSettings):
@@ -29,6 +25,24 @@ class CommonConfig(_BaseSettings, env_prefix="COMMON_"):
     admin_id: int
     drop_pending_updates: bool
     sqlalchemy_logging: bool
+
+
+class LocalBotAPI(_BaseSettings, env_prefix="LOCALBOTAPI_"):
+    enabled: bool
+    base_url: str
+    file_url: str
+    is_local: bool
+
+    def build_server(self) -> TelegramAPIServer:
+        if not self.file_url:
+            return TelegramAPIServer.from_base(self.base_url, is_local=self.is_local)
+
+        base_url: str = self.base_url.rstrip("/")
+        return TelegramAPIServer(
+            base=base_url,
+            file=self.file_url,
+            is_local=self.is_local
+        )
 
 
 class PostgresConfig(_BaseSettings, env_prefix="POSTGRES_"):
@@ -119,6 +133,7 @@ class WebhookConfig(_BaseSettings, env_prefix="WEBHOOK_"):
 
 class AppConfig(BaseModel):
     common: CommonConfig
+    localbotapi: LocalBotAPI
     postgres: PostgresConfig
     scheduler: SchedulerConfig
     redis: RedisConfig
@@ -128,6 +143,7 @@ class AppConfig(BaseModel):
     def create(cls) -> Self:
         return cls(
             common=CommonConfig(),
+            localbotapi=LocalBotAPI(),
             postgres=PostgresConfig(),
             scheduler=SchedulerConfig(),
             redis=RedisConfig(),

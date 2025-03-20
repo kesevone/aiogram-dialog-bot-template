@@ -5,7 +5,7 @@ from aiogram.enums import ChatType
 from aiogram.filters import ChatMemberUpdatedFilter, JOIN_TRANSITION, LEAVE_TRANSITION
 from aiogram.types import ChatMemberUpdated
 
-from src.database import DBUser, Gateway
+from bot.database import DBUser, Gateway
 
 router = Router(name=__name__)
 router.my_chat_member.filter(F.chat.type == ChatType.PRIVATE)
