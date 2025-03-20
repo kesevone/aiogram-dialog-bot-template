@@ -6,9 +6,8 @@ COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt \
     && pip cache purge
 
+COPY . .
 COPY start.sh .
 RUN chmod +x start.sh
-
-COPY . .
 
 CMD ["./start.sh"]

@@ -25,7 +25,7 @@ services:
       - POSTGRES_DB=${POSTGRES_DB}
       - TZ=UTC
     ports:
-      - '5432:5432'
+      - '15432:5432'
     volumes:
       - aiogram-dialog-bot-db-data:/var/lib/postgresql/data
     healthcheck:
@@ -40,7 +40,7 @@ services:
     hostname: aiogram-dialog-bot-redis
     restart: always
     ports:
-      - "6379:6379"
+      - "16379:6379"
     volumes:
       - aiogram-dialog-bot-redis-data:/data
     healthcheck:
