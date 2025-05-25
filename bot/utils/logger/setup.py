@@ -2,11 +2,16 @@ import logging
 
 
 def setup_logger(level: int = logging.INFO) -> None:
-    for name in ["aiogram.middlewares", "aiogram.event", "aiohttp.access", "apscheduler._schedulers.async_"]:
+    for name in [
+        "aiogram.middlewares",
+        "aiogram.event",
+        "aiohttp.access",
+        "apscheduler._schedulers.async_",
+    ]:
         logging.getLogger(name).setLevel(logging.WARNING)
 
     logging.basicConfig(
         format="[%(asctime)s | %(levelname)s | %(name)s] — %(message)s",
-        datefmt="%H:%M:%S",
+        datefmt="%d.%m.%Y %H:%M:%S",
         level=level,
     )
