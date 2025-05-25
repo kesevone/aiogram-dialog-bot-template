@@ -1,7 +1,6 @@
-from typing import Any, Optional, Sequence
+from typing import Optional, Sequence
 
-from sqlalchemy import ColumnElement, func, or_, ScalarResult, select
-from sqlalchemy.orm import QueryableAttribute
+from sqlalchemy import func, or_, ScalarResult, select
 
 from bot.database.models import DBUser
 from .base import BaseGateway
@@ -40,14 +39,8 @@ class UsersGateway(BaseGateway):
     async def get_all(
         self,
         is_active: Optional[bool] = None,
-        load: Optional[
-            tuple[QueryableAttribute[Any]]
-            | list[QueryableAttribute[Any]]
-            | QueryableAttribute[Any]
-        ] = None,
-        order_by: Optional[
-            tuple[str | ColumnElement] | list[str | ColumnElement] | str | ColumnElement
-        ] = None,
+        load: Optional[LoadOption] = None,
+        order_by: Optional[OrderByOption] = None,
         limit: Optional[int] = None,
     ) -> Sequence[Optional[DBUser]]:
         self._stmt = select(DBUser).where(
