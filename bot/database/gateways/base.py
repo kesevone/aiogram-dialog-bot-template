@@ -7,7 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 from bot.database.types import LoadOption, OrderByOption
-from bot.utils.database.normalize_iterable import normalize_iterable
+from bot.utils.database import normalize_iterable
 
 if TYPE_CHECKING:
     from bot.database import Base
