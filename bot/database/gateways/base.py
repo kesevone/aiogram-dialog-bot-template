@@ -2,9 +2,12 @@ from __future__ import annotations
 
 from typing import Any, Iterable, Optional, TYPE_CHECKING
 
-from sqlalchemy import ColumnElement, Select
+from sqlalchemy import Select
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy.orm import joinedload, QueryableAttribute
+from sqlalchemy.orm import joinedload
+
+from bot.database.types import LoadOption, OrderByOption
+from bot.utils.database.normalize_iterable import normalize_iterable
 
 if TYPE_CHECKING:
     from bot.database import Base
@@ -21,53 +24,35 @@ class BaseGateway:
     def add(self, *instances: "Base") -> None:
         self._session.add_all(instances)
 
+    async def flush(self, *instances: "Base") -> None:
+        await self._session.flush(instances)
+
     async def delete(self, *instances: "Base") -> None:
         for instance in instances:
             await self._session.delete(instance)
 
-    async def commit(self, *instances: "Base") -> None:
-        for instance in instances:
-            self.add(instance)
-
+    async def commit(self) -> None:
         await self._session.commit()
 
-    def load(
+    def _load(
         self,
-        relations: Optional[
-            tuple[QueryableAttribute[Any]]
-            | list[QueryableAttribute[Any]]
-            | QueryableAttribute[Any]
-        ] = None,
+        values: Optional[LoadOption] = None,
     ) -> None:
-        if not isinstance(relations, Iterable):
-            if relations is None:
-                return
-            relations = [relations]
-        else:
-            if not relations:
-                return
+        relations: Iterable = normalize_iterable(values)
+        if relations:
+            self._stmt = self._stmt.options(
+                *[joinedload(relation) for relation in relations]
+            )
 
-        self._stmt = self._stmt.options(
-            *[joinedload(relation) for relation in relations]
-        )
-
-    def order_by(
+    def _order_by(
         self,
-        columns: Optional[
-            tuple[str | ColumnElement] | list[str | ColumnElement] | str | ColumnElement
-        ] = None,
+        values: Optional[OrderByOption] = None,
     ) -> None:
-        if not isinstance(columns, Iterable):
-            if columns is None:
-                return
-            columns = [columns]
-        else:
-            if not columns:
-                return
+        criteria: Iterable = normalize_iterable(values)
+        if criteria:
+            self._stmt = self._stmt.order_by(*criteria)
 
-        self._stmt = self._stmt.order_by(*columns)
-
-    def limit(self, limit: Optional[int] = None) -> None:
+    def _limit(self, limit: Optional[int] = None) -> None:
         if not limit:
             return
 
