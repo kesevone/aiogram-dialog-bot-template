@@ -42,15 +42,20 @@ async def webhook_shutdown(bot: Bot, config: AppConfig) -> None:
     return await bot.session.close()
 
 
-async def run_bot(dp: Dispatcher, bot: Bot, config: AppConfig) -> None:
-    sqlite_engine: AsyncEngine = config.scheduler.build_engine()
-    async with config.scheduler.build_scheduler(engine=sqlite_engine) as sched:
-        await sched.start_in_background()
+async def _run_bot(dp: Dispatcher, bot: Bot, config: AppConfig) -> None:
+    if config.webhook.enabled:
+        return run_webhook(dp=dp, bot=bot, config=config)
+    return await run_polling(dp=dp, bot=bot)
 
-        dp["scheduler"] = sched
-        if config.webhook.enabled:
-            return run_webhook(dp=dp, bot=bot, config=config)
-        return await run_polling(dp=dp, bot=bot)
+
+async def run_bot(dp: Dispatcher, bot: Bot, config: AppConfig) -> None:
+    if config.scheduler.enabled:
+        sqlite_engine: AsyncEngine = config.scheduler.build_engine()
+        async with config.scheduler.build_scheduler(engine=sqlite_engine) as sched:
+            await sched.start_in_background()
+            dp["scheduler"] = sched
+            return await _run_bot(dp=dp, bot=bot, config=config)
+    return await _run_bot(dp=dp, bot=bot, config=config)
 
 
 async def run_polling(dp: Dispatcher, bot: Bot) -> None:

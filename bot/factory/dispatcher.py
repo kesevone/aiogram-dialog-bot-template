@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from aiogram import Dispatcher
-from aiogram.fsm.storage.memory import SimpleEventIsolation
+from aiogram.fsm.storage.memory import MemoryStorage, SimpleEventIsolation
 from aiogram.fsm.storage.redis import DefaultKeyBuilder, RedisStorage
 from aiogram_dialog import setup_dialogs
 from redis.asyncio import Redis
@@ -22,22 +22,30 @@ def _setup_outer_middlewares(dp: Dispatcher, config: AppConfig) -> None:
     dp.update.outer_middleware(UserMiddleware())
 
 
-def create_dispatcher(config: AppConfig) -> Dispatcher:
-    redis: Redis = config.redis.build_client()
-
-    dp: Dispatcher = Dispatcher(
-        name="dispatcher",
-        storage=RedisStorage(
-            redis=redis,
+def setup_storage(dp: Dispatcher, config: AppConfig) -> None:
+    if config.redis.enabled:
+        redis: Redis = config.redis.build_client()
+        storage = RedisStorage(
+            redis=config.redis.build_client(),
             json_loads=mjson.decode,
             json_dumps=mjson.encode,
             key_builder=DefaultKeyBuilder(with_destiny=True, with_bot_id=True),
-        ),
-        redis=redis,
+        )
+        dp["redis"] = redis
+    else:
+        storage = MemoryStorage()
+
+    dp["storage"] = storage
+
+
+def create_dispatcher(config: AppConfig) -> Dispatcher:
+    dp: Dispatcher = Dispatcher(
+        name="dispatcher",
         config=config,
         events_isolation=SimpleEventIsolation(),
     )
 
+    setup_storage(dp=dp, config=config)
     bg_manager_factory = setup_dialogs(router=dp)
     dp["bg_manager_factory"] = bg_manager_factory
 

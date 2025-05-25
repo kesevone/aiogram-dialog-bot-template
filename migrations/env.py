@@ -15,7 +15,7 @@ target_metadata: MetaData = Base.metadata
 
 def _get_postgres_dsn() -> URL:
     _config: PostgresConfig = PostgresConfig()
-    return _config.build_dsn()
+    return _config.dsn.unicode_string()
 
 
 def run_migrations_offline() -> None:

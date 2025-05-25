@@ -5,11 +5,16 @@ from typing import Optional, Self
 
 from aiogram.client.telegram import TelegramAPIServer
 from apscheduler.datastores.sqlalchemy import SQLAlchemyDataStore
-from pydantic import BaseModel, Field, SecretStr
+from pydantic import BaseModel, Field, PostgresDsn, RedisDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from redis.asyncio import ConnectionPool, Redis
+from redis.asyncio import Redis
 from sqlalchemy import URL
-from sqlalchemy.ext.asyncio import async_sessionmaker, AsyncEngine, AsyncSession, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    async_sessionmaker,
+    AsyncEngine,
+    AsyncSession,
+    create_async_engine,
+)
 
 from bot.scheduler import CustomScheduler
 
@@ -39,60 +44,45 @@ class LocalBotAPI(_BaseSettings, env_prefix="LOCALBOTAPI_"):
 
         base_url: str = self.base_url.rstrip("/")
         return TelegramAPIServer(
-            base=base_url,
-            file=self.file_url,
-            is_local=self.is_local
+            base=base_url, file=self.file_url, is_local=self.is_local
         )
 
 
 class PostgresConfig(_BaseSettings, env_prefix="POSTGRES_"):
-    db: str
-    host: str
-    port: int
-    user: str
-    password: SecretStr
-
-    def build_dsn(self) -> URL:
-        return URL.create(
-            drivername="postgresql+asyncpg",
-            username=self.user,
-            password=self.password.get_secret_value(),
-            host=self.host,
-            port=self.port,
-            database=self.db,
-        )
+    dsn: PostgresDsn
 
     def build_pool(
         self, dsn: Optional[str | URL] = None, enable_logging: bool = False
     ) -> async_sessionmaker[AsyncSession]:
         if dsn is None:
-            dsn = self.build_dsn()
-        engine: AsyncEngine = create_async_engine(url=dsn, echo=enable_logging)
+            dsn = self.dsn.unicode_string()
+        engine: AsyncEngine = create_async_engine(
+            url=dsn,
+            echo=enable_logging,
+            pool_size=20,
+            max_overflow=10,
+            pool_timeout=30,
+            connect_args={"command_timeout": 30},
+        )
         return async_sessionmaker(engine, expire_on_commit=False)
 
 
 class SchedulerConfig(_BaseSettings, env_prefix="SCHEDULER_"):
     enabled: bool
     logging: bool
-    db_path: str
-
-    def build_dsn(self) -> URL:
-        return URL.create(
-            drivername="sqlite+aiosqlite",
-            database=self.db_path,
-        )
+    dsn: str
 
     def build_engine(
         self, dsn: Optional[str | URL] = None, enable_logging: bool = False
     ) -> AsyncEngine:
         if dsn is None:
-            dsn = self.build_dsn()
+            dsn = self.dsn
         engine: AsyncEngine = create_async_engine(url=dsn, echo=enable_logging)
         return engine
 
     def build_pool(
         self, dsn: Optional[str | URL] = None, enable_logging: bool = False
-    ) -> async_sessionmaker[AsyncSession] | AsyncEngine:
+    ) -> tuple[async_sessionmaker[AsyncSession], AsyncEngine]:
         engine: AsyncEngine = self.build_engine(dsn=dsn, enable_logging=enable_logging)
         return async_sessionmaker(engine, expire_on_commit=False), engine
 
@@ -104,18 +94,11 @@ class SchedulerConfig(_BaseSettings, env_prefix="SCHEDULER_"):
 
 
 class RedisConfig(_BaseSettings, env_prefix="REDIS_"):
-    host: str
-    port: int
-    db: int
+    enabled: bool
+    dsn: RedisDsn
 
     def build_client(self) -> Redis:
-        return Redis(
-            connection_pool=ConnectionPool(
-                host=self.host,
-                port=self.port,
-                db=self.db,
-            )
-        )
+        return Redis.from_url(self.dsn.unicode_string())
 
 
 class WebhookConfig(_BaseSettings, env_prefix="WEBHOOK_"):
