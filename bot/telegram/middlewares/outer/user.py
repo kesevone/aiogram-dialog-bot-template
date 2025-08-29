@@ -25,7 +25,8 @@ class UserMiddleware(BaseMiddleware):
         user: Optional[DBUser] = await gw.users.get_by_id(user_id=aiogram_user.id)
         if user is None:
             user: DBUser = DBUser.from_aiogram(user=aiogram_user)
-            await gw.commit(user)
+            gw.add(user)
+            await gw.commit()
             logger.info(
                 "New user in database: %s (%d)", aiogram_user.full_name, aiogram_user.id
             )
