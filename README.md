@@ -28,14 +28,14 @@ Several implementations that I liked I took from the template [wakaree](https://
 4. Run bot: `python -m bot`
 
 ### 📂 Used technologies:
-+ [Aiogram 3.20.0.post0](https://github.com/aiogram/aiogram) (Telegram Bot Framework)
-+ [Aiogram Dialog 2.3.1](https://github.com/Tishka17/aiogram_dialog) (convenient and simple development of menus and messages in the bot, as if it were a GUI application)
-+ [Sulguk 0.8.0](https://github.com/Tishka17/sulguk) (HTML converter to Telegram entities)
++ [Aiogram 3.23.0](https://github.com/aiogram/aiogram) (Telegram Bot Framework)
++ [Aiogram Dialog 2.4.0](https://github.com/Tishka17/aiogram_dialog) (convenient and simple development of menus and messages in the bot, as if it were a GUI application)
++ [Sulguk 0.11.0](https://github.com/Tishka17/sulguk) (HTML converter to Telegram entities)
 + [FastAPI Server](https://github.com/4u-org/aiogram_fastapi_server) (replacement of aiohttp for bot webhooks, since aiohttp is not intended for High-Level development of server options)
 + [PostgreSQL](https://www.postgresql.org/) (Database, best choice)
-+ [SQLAlchemy 2.0.41](https://github.com/sqlalchemy/sqlalchemy) (Toolkit and ORM for working with a database)
-+ [Alembic 1.16.1](https://github.com/alembic/alembic) (Lightweight database migration tool)
-+ [Redis 6.1.0](https://github.com/redis/redis) (In-memory data storage for FSM and caching)
++ [SQLAlchemy 2.0.45](https://github.com/sqlalchemy/sqlalchemy) (Toolkit and ORM for working with a database)
++ [Alembic 1.17.2](https://github.com/alembic/alembic) (Lightweight database migration tool)
++ [Redis 7.1.0](https://github.com/redis/redis) (In-memory data storage for FSM and caching)
 
 ## 📌 TODO
 + [x] Integration APScheduler, a full-fledged task scheduler (.. broker).
