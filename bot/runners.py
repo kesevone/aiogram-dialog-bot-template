@@ -16,7 +16,7 @@ async def polling_startup(bot: Bot, config: AppConfig) -> None:
     await bot.delete_webhook(drop_pending_updates=config.common.drop_pending_updates)
 
     if config.common.drop_pending_updates:
-        return loggers.dispatcher.info("Pending updates successfully dropped.")
+        loggers.dispatcher.info("Pending updates successfully dropped.")
 
 
 async def webhook_startup(dispatcher: Dispatcher, bot: Bot, config: AppConfig) -> None:
@@ -33,7 +33,7 @@ async def webhook_startup(dispatcher: Dispatcher, bot: Bot, config: AppConfig) -
 
 async def webhook_shutdown(bot: Bot, config: AppConfig) -> None:
     if not config.webhook.reset:
-        return
+        return None
 
     if await bot.delete_webhook():
         loggers.webhook.info("Dropped bot webhook.")

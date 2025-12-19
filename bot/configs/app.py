@@ -5,9 +5,9 @@ from typing import Optional, Self
 
 from aiogram.client.telegram import TelegramAPIServer
 from apscheduler.datastores.sqlalchemy import SQLAlchemyDataStore
-from pydantic import BaseModel, Field, PostgresDsn, RedisDsn, SecretStr
+from pydantic import BaseModel, Field, PostgresDsn, SecretStr
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from redis.asyncio import Redis
+from redis.asyncio import Redis, ConnectionPool
 from sqlalchemy import URL
 from sqlalchemy.ext.asyncio import (
     async_sessionmaker,
@@ -95,10 +95,18 @@ class SchedulerConfig(_BaseSettings, env_prefix="SCHEDULER_"):
 
 class RedisConfig(_BaseSettings, env_prefix="REDIS_"):
     enabled: bool
-    dsn: RedisDsn
+    host: str
+    port: int
+    db: int
 
     def build_client(self) -> Redis:
-        return Redis.from_url(self.dsn.unicode_string())
+        return Redis(
+            connection_pool=ConnectionPool(
+                host=self.host,
+                port=self.port,
+                db=self.db,
+            )
+        )
 
 
 class WebhookConfig(_BaseSettings, env_prefix="WEBHOOK_"):
